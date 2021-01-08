@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static com.telecom.mobileconnection.common.Constants.*;
+import static com.telecom.mobileconnection.utils.MobileConnectionContants.*;
 import static java.lang.Boolean.TRUE;
 
 @Service
