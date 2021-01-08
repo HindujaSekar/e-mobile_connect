@@ -1,52 +1,89 @@
 package com.telecom.mobileconnection.service;
 
-import java.util.Optional;
-import java.util.Random;
-import java.util.regex.Pattern;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.telecom.mobileconnection.repository.PlanRepository;
+import com.telecom.mobileconnection.common.Availability;
+import com.telecom.mobileconnection.common.SubscriptionStatus;
+import com.telecom.mobileconnection.dto.UserRequestDto;
+import com.telecom.mobileconnection.dto.UserResponseDto;
+import com.telecom.mobileconnection.entity.MobileNumber;
+import com.telecom.mobileconnection.entity.Subscription;
+import com.telecom.mobileconnection.entity.User;
+import com.telecom.mobileconnection.exception.DatabaseConnectionException;
+import com.telecom.mobileconnection.exception.InvalidCredentialsException;
+import com.telecom.mobileconnection.repository.MobileNumberRepository;
 import com.telecom.mobileconnection.repository.SubscriptionRepository;
 import com.telecom.mobileconnection.repository.UserRepository;
+import com.telecom.mobileconnection.service.validator.FieldValidator;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.Optional;
+
+import static com.telecom.mobileconnection.common.Constants.*;
+import static java.lang.Boolean.TRUE;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-	@Autowired
-	UserRepository userRepository;
 
-	@Autowired
-	SubscriptionRepository subscriptionRepository;
+    private final UserRepository userRepository;
 
-	@Autowired
-	PlanRepository planRepository;
+    private final SubscriptionRepository subscriptionRepository;
 
-	Random rand;
+    private final MobileNumberRepository mobileNumberRepository;
+
+    private final FieldValidator fieldValidator;
 
 
-	private boolean validateUserName(String userName) {
-		String name = ("^[a-zA-Z]*$");
-		return userName.matches(name);
-	}
+    @Override
+    public UserResponseDto subscribeNewConnection(final UserRequestDto userRequestDto) {
 
-	private boolean validEmailId(String email) {
-		Pattern p = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-		java.util.regex.Matcher m = p.matcher(email);
-		return (m.find() && m.group().equals(email));
-	}
+        validateEmail(userRequestDto.getEmailId());
+        validatePhone(userRequestDto.getAlternatePhone());
+        Optional<User> user = Optional.of(userRepository.save(buildUser(userRequestDto)));
+        return user.filter(userInfo -> null != userInfo.getUserId()).flatMap((userInfo) -> {
+            Optional<Subscription> subscription = Optional.of(subscriptionRepository.save(buildSubscription(userRequestDto, userInfo.getUserId())));
+            return subscription.filter(subscriptionInfo -> null != subscriptionInfo.getSubscriptionId()).map(
+                    (subscriptionInfo) -> {
+                        updateMobileNumberStatus(subscriptionInfo.getMobileId(), Availability.NOT_AVAILABLE.getAvailability());
+                        return UserResponseDto.builder().subscriptionId(subscriptionInfo.getSubscriptionId()).statusCode(HttpStatus.CREATED.value()).build();
+                    });
+        }).orElseThrow(() -> new DatabaseConnectionException(DB_CONNECTION_ERROR));
 
-	private boolean validPhoneNumber(Long number) {
-		String num = number.toString();
-		Pattern p = Pattern.compile("^[0-9]{10}$");
-		java.util.regex.Matcher m = p.matcher(num);
-		return (m.find() && m.group().equals(num));
-	}
+    }
 
-	private boolean validPanNo(String panNo) {
-		Pattern p = Pattern.compile("^[a-zA-Z1-9]*$", Pattern.CASE_INSENSITIVE);
-		java.util.regex.Matcher m = p.matcher(panNo);
-		return (m.find() && m.group().equals(panNo));
-	}
+    private void validateEmail(final String email) {
+        Optional<Boolean> isValid = Optional.of(fieldValidator.validEmailId(email));
+        isValid.filter(TRUE::equals).orElseThrow(() ->
+                new InvalidCredentialsException(INVALID_EMAIL));
+    }
 
+    private void validatePhone(final String phone) {
+        Optional<Boolean> isValid = Optional.of(fieldValidator.validPhoneNumber(phone));
+        isValid.filter(TRUE::equals).orElseThrow(() ->
+                new InvalidCredentialsException(INVALID_PHONE));
+    }
+
+    private User buildUser(final UserRequestDto userRequestDto) {
+
+        return User.builder().userName(userRequestDto.getUserName())
+                .emailId(userRequestDto.getEmailId()).alternateNumber(userRequestDto.getAlternatePhone())
+                .aadharNo(userRequestDto.getAadharNo()).address(userRequestDto.getAddress()).build();
+    }
+
+    private Subscription buildSubscription(final UserRequestDto userRequestDto, final Integer userId) {
+        return Subscription.builder().userId(userId).mobileId(userRequestDto.getMobileId())
+                .planId(userRequestDto.getPlanId()).status(SubscriptionStatus.PROGRESS.getStatus()).registerDate(LocalDate.now()).build();
+    }
+
+    private void updateMobileNumberStatus(final Integer id, final String status) {
+        Optional<MobileNumber> mobileNumber = mobileNumberRepository.findById(id);
+        mobileNumber.map(phone -> {
+            phone.setAvailability(status);
+            return mobileNumberRepository.save(phone);
+        }).orElseThrow(() -> new DatabaseConnectionException(DB_CONNECTION_ERROR));
+
+
+    }
 }

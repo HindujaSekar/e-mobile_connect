@@ -1,17 +1,14 @@
 package com.telecom.mobileconnection.exception;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 public class ErrorResponse {
-	private String message;
-	private Integer statusCode;
-
-	public ErrorResponse(String message, int value) {
-		this.message = message;
-		this.statusCode = value;
-	}
+    private String message;
+    private Integer statusCode;
 
 }
