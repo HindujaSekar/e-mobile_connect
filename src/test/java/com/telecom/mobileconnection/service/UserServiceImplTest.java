@@ -1,5 +1,6 @@
 package com.telecom.mobileconnection.service;
 
+import com.telecom.mobileconnection.dto.SubscriptionResponseDto;
 import com.telecom.mobileconnection.dto.UserRequestDto;
 import com.telecom.mobileconnection.dto.UserResponseDto;
 import com.telecom.mobileconnection.entity.MobileNumber;
@@ -7,6 +8,7 @@ import com.telecom.mobileconnection.entity.Subscription;
 import com.telecom.mobileconnection.entity.User;
 import com.telecom.mobileconnection.exception.DatabaseConnectionException;
 import com.telecom.mobileconnection.exception.InvalidCredentialsException;
+import com.telecom.mobileconnection.exception.InvalidSubscriptionIdException;
 import com.telecom.mobileconnection.repository.MobileNumberRepository;
 import com.telecom.mobileconnection.repository.SubscriptionRepository;
 import com.telecom.mobileconnection.repository.UserRepository;
@@ -19,8 +21,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static com.telecom.mobileconnection.common.SubscriptionStatus.PROGRESS;
 import static com.telecom.mobileconnection.utils.MobileConnectionContants.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -90,5 +93,25 @@ class UserServiceImplTest {
         }
     }
 
+    @Test
+    public void testSubscriptionDetailsOk() throws InvalidSubscriptionIdException {
+        Subscription subscription = new Subscription();
+        subscription.setApproverComments(EMPTY_STRING);
+        subscription.setStatus(PROGRESS.toString());
+        when(subscriptionRepository.findBySubscriptionId(1)).thenReturn(Optional.of(subscription));
+        SubscriptionResponseDto subscriptionResponseDto = underTest.getSubscriptionStatus(1);
+        assertNotNull(subscriptionResponseDto);
+        assertEquals(SUBSCRIPTION_MESSAGE, subscriptionResponseDto.getMessage());
+        assertEquals(STATUS_CODE_OK, subscriptionResponseDto.getStatusCode());
+    }
 
+    @Test
+    public void testInvalidSubscriptionId() throws InvalidSubscriptionIdException {
+        when(
+                subscriptionRepository.findBySubscriptionId(210))
+                .thenReturn(Optional.empty());
+        assertThrows(InvalidSubscriptionIdException.class, () -> {
+            underTest.getSubscriptionStatus(210);
+        });
+    }
 }
