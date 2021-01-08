@@ -8,7 +8,7 @@ public enum Availability {
     AVAILABLE("AVAILABLE"),
     NOT_AVAILABLE("NOT_AVAILABLE");
 
-    private String availability;
+    private final String availability;
 
     Availability(final String availability) {
         this.availability = availability;

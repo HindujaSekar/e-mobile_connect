@@ -10,7 +10,7 @@ public enum SubscriptionStatus {
     REJECTED("REJECTED"),
     REFER_BACK("REFER_BACK"),
     CONNECTION_ENABLED("CONNECTION_ENABLED");
-    private String status;
+    private final String status;
 
     SubscriptionStatus(final String status) {
         this.status = status;

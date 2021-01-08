@@ -6,8 +6,6 @@ public class MobileConnectionContants {
 		throw new IllegalStateException("Utility class");
 	}
 	public static final String MOBILE_NUMBERS_NOT_FOUND = "No Mobile numbers available";
-	public static final String GET_MASTERDATA_SERVICE = "Inside MasterData service";
-	public static final String GET_MASTERDATA_CONTROLLER = "Inside Masterdata controller";
 	public static final String AVAILABLE = "Available";
 	public static final String INVALID_EMAIL = "Invalid Email please provide valid mail-id";
 	public static final String INVALID_PHONE = "Invalid Phone number please provide valid number";
@@ -20,8 +18,6 @@ public class MobileConnectionContants {
 	public static final Integer PLANE_ID= 1;
 	public static final String NO_SUBSCRIPTION_ID_FOUND = "No Such SubscriptionId found";
 	public static final String SUBSCRIPTION_MESSAGE = "Subscription details fetched Successfully";
-	public static final String GET_USER_CONTROLLER = "Inside User controller";
-	public static final String GET_USER_SERVICE = "Inside User service";
 	public static final Integer STATUS_CODE_OK = 200;
 	public static final String EMPTY_STRING = "";
 }

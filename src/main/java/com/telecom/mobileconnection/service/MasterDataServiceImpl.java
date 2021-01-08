@@ -1,12 +1,5 @@
 package com.telecom.mobileconnection.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.telecom.mobileconnection.dto.MobileNumberResponseDto;
 import com.telecom.mobileconnection.dto.PlanResponseDto;
 import com.telecom.mobileconnection.entity.MobileNumber;
@@ -15,53 +8,53 @@ import com.telecom.mobileconnection.exception.MobileNumbersNotAvailableException
 import com.telecom.mobileconnection.repository.MobileNumberRepository;
 import com.telecom.mobileconnection.repository.PlanRepository;
 import com.telecom.mobileconnection.utils.MobileConnectionContants;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static com.telecom.mobileconnection.utils.LogConstants.GET_MASTERDATA_SERVICE;
 
 @Service
 @Slf4j
 public class MasterDataServiceImpl implements MasterDataService {
 
-	@Autowired
-	MobileNumberRepository mobileNumberRepository;
-	
-	@Autowired
-	PlanRepository planRepository;
+    @Autowired
+    MobileNumberRepository mobileNumberRepository;
 
-	@Override
-	public List<MobileNumberResponseDto> getAvailableMobileNumbers() throws MobileNumbersNotAvailableException{
+    @Autowired
+    PlanRepository planRepository;
 
-		log.info(MobileConnectionContants.GET_MASTERDATA_SERVICE);
-		Optional<List<MobileNumber>> mobileNumberList = mobileNumberRepository.findByAvailability(MobileConnectionContants.AVAILABLE);
-		List<MobileNumberResponseDto> mobileNumberResponseDTOList = new ArrayList<>();
-		mobileNumberList.orElseThrow(() -> new MobileNumbersNotAvailableException(MobileConnectionContants.MOBILE_NUMBERS_NOT_FOUND));
-		mobileNumberList.get().forEach(mobileNumber -> {
-		MobileNumberResponseDto mobileNumberResponseDTO = new MobileNumberResponseDto();
-		mobileNumberResponseDTO.setMobileNumberId(mobileNumber.getMobileId());
-		mobileNumberResponseDTO.setMobileNumber(mobileNumber.getMobileNumber());
-		mobileNumberResponseDTOList.add(mobileNumberResponseDTO);
-		
-		});
-		return mobileNumberResponseDTOList;
+    @Override
+    public List<MobileNumberResponseDto> getAvailableMobileNumbers() throws MobileNumbersNotAvailableException {
 
-	}
+        log.info(GET_MASTERDATA_SERVICE);
+        Optional<List<MobileNumber>> mobileNumberList = mobileNumberRepository.findByAvailability(MobileConnectionContants.AVAILABLE);
+        List<MobileNumberResponseDto> mobileNumberResponseDTOList = new ArrayList<>();
+        mobileNumberList.orElseThrow(() -> new MobileNumbersNotAvailableException(MobileConnectionContants.MOBILE_NUMBERS_NOT_FOUND));
+        mobileNumberList.get().forEach(mobileNumber -> mobileNumberResponseDTOList.add(MobileNumberResponseDto.builder()
+                .mobileNumberId(mobileNumber.getMobileId())
+                .mobileNumber(mobileNumber.getMobileNumber()).build()));
+        return mobileNumberResponseDTOList;
 
-	@Override
-	public List<PlanResponseDto> getListOfPlan() {
-		
-		List<Plan> planList = planRepository.findAll();
-		List<PlanResponseDto> planResponseDtoList = new ArrayList<>();
-		
-		
-		planList.forEach(plan -> {
-			PlanResponseDto planResponseDto = new PlanResponseDto();
-			planResponseDto.setPlanId(plan.getPlanId());
-			planResponseDto.setPlanDescription(plan.getPlanDescription());
-			planResponseDto.setValidity(plan.getValidity());
-			planResponseDto.setPrice(plan.getPrice());
-			planResponseDtoList.add(planResponseDto);
-			});
-		return planResponseDtoList;
-	}
+    }
+
+    @Override
+    public List<PlanResponseDto> getListOfPlan() {
+
+        log.info(GET_MASTERDATA_SERVICE);
+        List<Plan> planList = planRepository.findAll();
+        List<PlanResponseDto> planResponseDtoList = new ArrayList<>();
+        planList.forEach(plan -> planResponseDtoList.add(PlanResponseDto.builder()
+                .planDescription(plan.getPlanDescription())
+                .planId(plan.getPlanId())
+                .price(plan.getPrice())
+                .validity(plan.getValidity())
+                .build()));
+        return planResponseDtoList;
+    }
 
 }

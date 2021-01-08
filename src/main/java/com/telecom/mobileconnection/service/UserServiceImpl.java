@@ -16,10 +16,8 @@ import com.telecom.mobileconnection.repository.SubscriptionRepository;
 import com.telecom.mobileconnection.repository.UserRepository;
 import com.telecom.mobileconnection.service.validator.FieldValidator;
 import com.telecom.mobileconnection.utils.MobileConnectionContants;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -27,6 +25,7 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static com.telecom.mobileconnection.utils.LogConstants.GET_USER_SERVICE;
 import static com.telecom.mobileconnection.utils.MobileConnectionContants.*;
 import static java.lang.Boolean.TRUE;
 
@@ -47,6 +46,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto subscribeNewConnection(final UserRequestDto userRequestDto) {
 
+        log.info(GET_USER_SERVICE);
         validateEmail(userRequestDto.getEmailId());
         validatePhone(userRequestDto.getAlternatePhone());
         Optional<User> user = Optional.of(userRepository.save(buildUser(userRequestDto)));
@@ -60,23 +60,23 @@ public class UserServiceImpl implements UserService {
         }).orElseThrow(() -> new DatabaseConnectionException(DB_CONNECTION_ERROR));
 
     }
-    
+
     @SuppressWarnings("deprecation")
-	@Override
-	public SubscriptionResponseDto getSubscriptionStatus(Integer subscriptionId) throws InvalidSubscriptionIdException {
-		
-		log.info(MobileConnectionContants.GET_USER_SERVICE);
-		Optional<Subscription> subscriptionDetails = subscriptionRepository.findBySubscriptionId(subscriptionId);
-		subscriptionDetails.orElseThrow(() -> new InvalidSubscriptionIdException(MobileConnectionContants.NO_SUBSCRIPTION_ID_FOUND));
-			SubscriptionResponseDto subscriptionResponseDto = new SubscriptionResponseDto();
-			subscriptionResponseDto.setApproverComments(StringUtils.isEmpty(subscriptionDetails.get().getApproverComments()) 
-					? MobileConnectionContants.EMPTY_STRING : subscriptionDetails.get().getApproverComments());
-			subscriptionResponseDto.setSubscriptionStatus(subscriptionDetails.get().getStatus());
-			subscriptionResponseDto.setStatusCode(HttpStatus.OK.value());
-			subscriptionResponseDto.setMessage(MobileConnectionContants.SUBSCRIPTION_MESSAGE);
-			return subscriptionResponseDto;
-			
-	}
+    @Override
+    public SubscriptionResponseDto getSubscriptionStatus(Integer subscriptionId) throws InvalidSubscriptionIdException {
+
+        log.info(GET_USER_SERVICE);
+        Optional<Subscription> subscriptionDetails = subscriptionRepository.findBySubscriptionId(subscriptionId);
+        subscriptionDetails.orElseThrow(() -> new InvalidSubscriptionIdException(MobileConnectionContants.NO_SUBSCRIPTION_ID_FOUND));
+        SubscriptionResponseDto subscriptionResponseDto = new SubscriptionResponseDto();
+        subscriptionResponseDto.setApproverComments(StringUtils.isEmpty(subscriptionDetails.get().getApproverComments())
+                ? MobileConnectionContants.EMPTY_STRING : subscriptionDetails.get().getApproverComments());
+        subscriptionResponseDto.setSubscriptionStatus(subscriptionDetails.get().getStatus());
+        subscriptionResponseDto.setStatusCode(HttpStatus.OK.value());
+        subscriptionResponseDto.setMessage(MobileConnectionContants.SUBSCRIPTION_MESSAGE);
+        return subscriptionResponseDto;
+
+    }
 
     private void validateEmail(final String email) {
         Optional<Boolean> isValid = Optional.of(fieldValidator.validEmailId(email));
