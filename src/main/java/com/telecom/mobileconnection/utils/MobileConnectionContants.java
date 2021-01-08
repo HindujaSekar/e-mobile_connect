@@ -18,4 +18,10 @@ public class MobileConnectionContants {
 	public static final String PHONE= "9845789087";
 	public static final Integer MOBILE_ID= 1;
 	public static final Integer PLANE_ID= 1;
+	public static final String NO_SUBSCRIPTION_ID_FOUND = "No Such SubscriptionId found";
+	public static final String SUBSCRIPTION_MESSAGE = "Subscription details fetched Successfully";
+	public static final String GET_USER_CONTROLLER = "Inside User controller";
+	public static final String GET_USER_SERVICE = "Inside User service";
+	public static final Integer STATUS_CODE_OK = 200;
+	public static final String EMPTY_STRING = "";
 }

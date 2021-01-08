@@ -34,5 +34,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(responseDto, HttpStatus.INTERNAL_SERVER_ERROR);
 
     }
+    
+    @ExceptionHandler(InvalidSubscriptionIdException.class)
+	public ResponseEntity<ErrorResponse> invalidSubscriptionId(InvalidSubscriptionIdException e) {
+
+		ErrorResponse error = new ErrorResponse(e.getMessage(), HttpStatus.NOT_FOUND.value());
+		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+	}
 
 }

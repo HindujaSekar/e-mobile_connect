@@ -29,8 +29,6 @@ public class MasterDataControllerTest {
 	@Mock
 	MasterDataServiceImpl masterDataServiceImpl;
 	
-	
-	
 	@Test
 	public void testGetAvailableMobileNumbers() throws MobileNumbersNotAvailableException {
 		List<MobileNumberResponseDto> mobileNumberList = new ArrayList<>();
