@@ -17,9 +17,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.telecom.mobileconnection.dto.MobileNumberResponseDto;
+import com.telecom.mobileconnection.dto.PlanResponseDto;
 import com.telecom.mobileconnection.entity.MobileNumber;
+import com.telecom.mobileconnection.entity.Plan;
 import com.telecom.mobileconnection.exception.MobileNumbersNotAvailableException;
 import com.telecom.mobileconnection.repository.MobileNumberRepository;
+import com.telecom.mobileconnection.repository.PlanRepository;
 import com.telecom.mobileconnection.utils.MobileConnectionContants;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,6 +34,9 @@ public class MasterDataServiceImplTest {
 	
 	@Mock
 	MobileNumberRepository mobileNumberRepository;
+	
+	@Mock
+	PlanRepository planRepository;
 	
 	@Test
 	public void testGetAvailableMobileNumbersOk() throws MobileNumbersNotAvailableException{
@@ -57,6 +63,23 @@ public class MasterDataServiceImplTest {
 			masterDataServiceImpl.getAvailableMobileNumbers();
 		});
 
+	}
+	
+	@Test
+	public void testGetAvailablePlans() throws MobileNumbersNotAvailableException{
+		Plan plan = new Plan();
+		plan.setPlanDescription("Unlimited Talktime");
+		plan.setPlanId(1);
+		plan.setPrice(599.00);
+		plan.setValidity(84);
+		List<Plan> planList = new ArrayList<>();
+		planList.add(plan);
+		Mockito.when(
+				planRepository.findAll())
+				.thenReturn(planList);
+		List<PlanResponseDto> list = masterDataServiceImpl.getListOfPlan();
+		assertNotNull(list);
+		assertEquals(1, list.size());
 	}
 	
 }

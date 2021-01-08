@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.telecom.mobileconnection.dto.MobileNumberResponseDto;
+import com.telecom.mobileconnection.dto.PlanResponseDto;
 import com.telecom.mobileconnection.exception.MobileNumbersNotAvailableException;
 import com.telecom.mobileconnection.service.MasterDataServiceImpl;
 
@@ -38,6 +39,21 @@ public class MasterDataControllerTest {
 		mobileNumberList.add(mobileNumberResponseDTO);
 		Mockito.when(masterDataServiceImpl.getAvailableMobileNumbers()).thenReturn(mobileNumberList);
 		ResponseEntity<List<MobileNumberResponseDto>> mobileNumberResponseDtoList = masterDataController.getListofMobileNumbers();
+		assertEquals(HttpStatus.OK, mobileNumberResponseDtoList.getStatusCode());
+
+	}
+	
+	@Test
+	public void testgetPlanDetailsOk()  {
+		List<PlanResponseDto> planResponseDtoList = new ArrayList<>();
+		PlanResponseDto planResponseDto = new PlanResponseDto();
+		planResponseDto.setPlanDescription("Unlimited talktime");
+		planResponseDto.setPlanId(1);
+		planResponseDto.setPrice(599.00);
+		planResponseDto.setValidity(84);
+		planResponseDtoList.add(planResponseDto);
+		Mockito.when(masterDataServiceImpl.getListOfPlan()).thenReturn(planResponseDtoList);
+		ResponseEntity<List<PlanResponseDto>> mobileNumberResponseDtoList = masterDataController.plans();
 		assertEquals(HttpStatus.OK, mobileNumberResponseDtoList.getStatusCode());
 
 	}
