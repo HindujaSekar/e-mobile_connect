@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MobileNumberResponseDTO {
+public class MobileNumberResponseDto {
 	private Integer mobileNumberId;
 	private Long mobileNumber;
 	

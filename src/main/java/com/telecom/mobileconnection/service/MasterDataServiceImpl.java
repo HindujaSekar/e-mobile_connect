@@ -3,12 +3,11 @@ package com.telecom.mobileconnection.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.telecom.mobileconnection.dto.MobileNumberResponseDTO;
-import com.telecom.mobileconnection.dto.PlanResponseDTO;
+import com.telecom.mobileconnection.dto.MobileNumberResponseDto;
+import com.telecom.mobileconnection.dto.PlanResponseDto;
 import com.telecom.mobileconnection.entity.MobileNumber;
 import com.telecom.mobileconnection.entity.Plan;
 import com.telecom.mobileconnection.repository.MobileNumberRepository;
@@ -24,38 +23,38 @@ public class MasterDataServiceImpl implements MasterDataService {
 	PlanRepository planRepository;
 
 	@Override
-	public List<MobileNumberResponseDTO> getAvailableMobileNumbers() {
+	public List<MobileNumberResponseDto> getAvailableMobileNumbers() {
 
 		List<MobileNumber> mobileNumberList = mobileNumberRepository.findByAvailability("Available");
-		List<MobileNumberResponseDTO> mobileNumberResponseDTOList = new ArrayList<>();
+		List<MobileNumberResponseDto> mobileNumberResponseDtoList = new ArrayList<>();
 		
 		mobileNumberList.forEach(mobileNumber -> {
-		MobileNumberResponseDTO mobileNumberResponseDTO = new MobileNumberResponseDTO();
-		mobileNumberResponseDTO.setMobileNumberId(mobileNumber.getMobileId());
-		mobileNumberResponseDTO.setMobileNumber(mobileNumber.getMobileNumber());
-		mobileNumberResponseDTOList.add(mobileNumberResponseDTO);
+		MobileNumberResponseDto mobileNumberResponseDto = new MobileNumberResponseDto();
+		mobileNumberResponseDto.setMobileNumberId(mobileNumber.getMobileId());
+		mobileNumberResponseDto.setMobileNumber(mobileNumber.getMobileNumber());
+		mobileNumberResponseDtoList.add(mobileNumberResponseDto);
 		
 		});
-		return mobileNumberResponseDTOList;
+		return mobileNumberResponseDtoList;
 
 	}
 
 	@Override
-	public List<PlanResponseDTO> getListOfPlan() {
+	public List<PlanResponseDto> getListOfPlan() {
 		
 		List<Plan> planList = planRepository.findAll();
-		List<PlanResponseDTO> planResponseDTOList = new ArrayList<>();
+		List<PlanResponseDto> planResponseDtoList = new ArrayList<>();
 		
 		
 		planList.forEach(plan -> {
-			PlanResponseDTO planResponseDTO = new PlanResponseDTO();
-			planResponseDTO.setPlanId(plan.getPlanId());
-			planResponseDTO.setPlanDescription(plan.getPlanDescription());
-			planResponseDTO.setValidity(plan.getValidity());
-			planResponseDTO.setPrice(plan.getPrice());
-			planResponseDTOList.add(planResponseDTO);
+			PlanResponseDto planResponseDto = new PlanResponseDto();
+			planResponseDto.setPlanId(plan.getPlanId());
+			planResponseDto.setPlanDescription(plan.getPlanDescription());
+			planResponseDto.setValidity(plan.getValidity());
+			planResponseDto.setPrice(plan.getPrice());
+			planResponseDtoList.add(planResponseDto);
 			});
-		return planResponseDTOList;
+		return planResponseDtoList;
 	}
 
 }
