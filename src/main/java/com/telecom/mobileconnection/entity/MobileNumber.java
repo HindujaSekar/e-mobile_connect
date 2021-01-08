@@ -1,14 +1,14 @@
 package com.telecom.mobileconnection.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Table
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 public class MobileNumber {
@@ -18,5 +18,5 @@ public class MobileNumber {
     private Long mobileNumber;
     private String availability;
 
-   
+
 }

@@ -26,7 +26,7 @@ class UserControllerTest {
     private UserController underTest;
 
     @Test
-    void givenUserRequestDto_whenValidatesAndCreateNewContactSubscription_thenReturnSuccessResponseWithSubsrciptionId() {
+    void givenUserRequestDto_whenValidatesAndCreateNewContactSubscription_thenReturnSuccessResponseWithSubscriptionId() {
         when(userService.subscribeNewConnection(any(UserRequestDto.class))).thenReturn(UserResponseDto.builder().subscriptionId(SUBSCRIBE_ID).build());
         ResponseEntity<UserResponseDto> response = underTest.subscribeNewConnection(UserRequestDto.builder().userName(USER_NAME)
                 .emailId(EMAIL).alternatePhone(PHONE).mobileId(MOBILE_ID).planId(PLANE_ID).build());
