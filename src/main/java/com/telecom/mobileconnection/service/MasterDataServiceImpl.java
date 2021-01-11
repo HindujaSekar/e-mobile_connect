@@ -37,7 +37,7 @@ public class MasterDataServiceImpl implements MasterDataService {
         if(mobileNumberList.isPresent()) {
         mobileNumberList.get().forEach(mobileNumber -> mobileNumberResponseDTOList.add(MobileNumberResponseDto.builder()
                 .mobileNumberId(mobileNumber.getMobileId())
-                .mobileNumber(mobileNumber.getMobileNumber()).build()));
+                .mobileNumber(mobileNumber.getNumber()).build()));
         }else {
         	throw new MobileNumbersNotAvailableException(MobileConnectionContants.MOBILE_NUMBERS_NOT_FOUND);
         }

@@ -43,8 +43,8 @@ public class MasterDataServiceImplTest {
 		List<MobileNumber> mobileNumberList = new ArrayList<>();
 		MobileNumber mobileNumber = new MobileNumber();
 		mobileNumber.setMobileId(1);
-		mobileNumber.setMobileNumber(1234567890L);
-		mobileNumber.setAvailability(MobileConnectionContants.AVAILABLE);
+		mobileNumber.setNumber(1234567890L);
+		mobileNumber.setStatus(MobileConnectionContants.AVAILABLE);
 		mobileNumberList.add(mobileNumber);
 		Mockito.when(
 				mobileNumberRepository.findByAvailability(MobileConnectionContants.AVAILABLE))

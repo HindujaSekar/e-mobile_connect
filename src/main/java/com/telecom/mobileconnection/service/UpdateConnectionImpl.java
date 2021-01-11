@@ -48,7 +48,7 @@ public class UpdateConnectionImpl {
 						Optional<MobileNumber> optionalMobileNumber = mobileNumberRepository.findByMobileId(subscription.getMobileId());
 						if(optionalMobileNumber.isPresent()) {
 							MobileNumber mobileNumber = optionalMobileNumber.get();
-							mobileNumber.setAvailability(Availability.AVAILABLE.getAvailability());
+							mobileNumber.setStatus(Availability.AVAILABLE.getAvailability());
 							mobileNumbers.add(mobileNumber);
 							subscription.setStatus(SubscriptionStatus.CONNECTION_REJECTED.getStatus());
 							subscriptions.add(subscription);

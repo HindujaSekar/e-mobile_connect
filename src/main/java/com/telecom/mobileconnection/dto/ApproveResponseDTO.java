@@ -9,7 +9,7 @@ import lombok.Setter;
 @Builder
 public class ApproveResponseDTO {
 
- private Integer statusCode;
-private String message;
+	private Integer statusCode;
+	private String message;
 
 }

@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
                     .address(user.get().getAddress()).alternateNumber(user.get().getAlternateNumber())
                     .userName(user.get().getUserName()).status(connections.getStatus())
                     .subscriptionId(connections.getSubscriptionId()).planId(connections.getPlanId())
-                    .newNumber(number.get().getMobileNumber()).build();
+                    .newNumber(number.get().getNumber()).build();
             connectionResponse.add(response);
         });
         return connectionResponse;
@@ -152,7 +152,7 @@ public class UserServiceImpl implements UserService {
     private void updateMobileNumberStatus(final Integer id, final String status) {
         Optional<MobileNumber> mobileNumber = mobileNumberRepository.findById(id);
         mobileNumber.map(phone -> {
-            phone.setAvailability(status);
+            phone.setStatus(status);
             return mobileNumberRepository.save(phone);
         }).orElseThrow(() -> new DatabaseConnectionException(DB_CONNECTION_ERROR));
 

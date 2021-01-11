@@ -132,7 +132,7 @@ class UserServiceImplTest {
        
         when(subscriptionRepository.findByStatus(Mockito.anyString())).thenReturn(subscriptionList);
         when(userRepository.findByUserId(1)).thenReturn(Optional.of(user));
-        when(mobileNumberRepository.findByMobileId(1)).thenReturn(Optional.of(MobileNumber.builder().mobileNumber(MOBILE_NUMBER).build()));
+        when(mobileNumberRepository.findByMobileId(1)).thenReturn(Optional.of(MobileNumber.builder().number(MOBILE_NUMBER).build()));
        
         List<ConnectionsResponseDto> response = underTest.getRequestedSubscriptions(SubscriptionStatus.PROGRESS.getStatus());
        

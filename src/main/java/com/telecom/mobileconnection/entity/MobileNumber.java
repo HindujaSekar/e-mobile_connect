@@ -15,8 +15,6 @@ public class MobileNumber {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer mobileId;
-    private Long mobileNumber;
-    private String availability;
-
-
+    private Long number;
+    private String status;
 }
