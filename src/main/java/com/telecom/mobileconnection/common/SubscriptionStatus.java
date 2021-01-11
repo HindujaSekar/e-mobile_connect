@@ -9,7 +9,8 @@ public enum SubscriptionStatus {
     APPROVED("APPROVED"),
     REJECTED("REJECTED"),
     REFER_BACK("REFER_BACK"),
-    CONNECTION_ENABLED("CONNECTION_ENABLED");
+    CONNECTION_ENABLED("CONNECTION_ENABLED"),
+    CONNECTION_REJECTED("CONNECTION_REJECTED");
     private final String status;
 
     SubscriptionStatus(final String status) {
