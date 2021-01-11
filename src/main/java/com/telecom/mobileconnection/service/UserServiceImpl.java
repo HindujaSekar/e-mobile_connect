@@ -159,7 +159,7 @@ public class UserServiceImpl implements UserService {
 
     }
     private Subscription updateSubscriptionStatus(final ApproveRequestDTO approveRequestDto, Subscription subscriptionDetails) {
-    	return Subscription.builder().subscriptionId(subscriptionDetails.getSubscriptionId()).userId(subscriptionDetails.getUserId()).approverId(subscriptionDetails.getApproverId()).mobileId(subscriptionDetails.getMobileId()).approverComments(approveRequestDto.getApproverComments())
+    	return Subscription.builder().subscriptionId(subscriptionDetails.getSubscriptionId()).userId(subscriptionDetails.getUserId()).approverId(approveRequestDto.getApproverId()).mobileId(subscriptionDetails.getMobileId()).approverComments(approveRequestDto.getApproverComments())
     	.planId(subscriptionDetails.getPlanId()).status(approveRequestDto.getStatus()).registerDate(LocalDate.now()).build();
     	}
 }
