@@ -1,13 +1,10 @@
 package com.telecom.mobileconnection.controller;
 
 import com.telecom.mobileconnection.common.SubscriptionStatus;
-import com.telecom.mobileconnection.dto.SubscriptionResponseDto;
-import com.telecom.mobileconnection.dto.UserRequestDto;
-import com.telecom.mobileconnection.dto.UserResponseDto;
+import com.telecom.mobileconnection.dto.*;
 import com.telecom.mobileconnection.exception.InvalidSubscriptionIdException;
 import com.telecom.mobileconnection.service.UserService;
 import com.telecom.mobileconnection.utils.MobileConnectionContants;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import static com.telecom.mobileconnection.utils.MobileConnectionContants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,15 +37,28 @@ class UserControllerTest {
 
 
     }
-    @Test
-	public void testGetAvailableMobileNumbers() throws InvalidSubscriptionIdException {
-		SubscriptionResponseDto subscriptionResponseDto = new SubscriptionResponseDto();
-		subscriptionResponseDto.setApproverComments(MobileConnectionContants.EMPTY_STRING);
-		subscriptionResponseDto.setMessage(MobileConnectionContants.SUBSCRIPTION_MESSAGE);
-		subscriptionResponseDto.setSubscriptionStatus(SubscriptionStatus.PROGRESS.toString());
-		when(userService.getSubscriptionStatus(1)).thenReturn(subscriptionResponseDto);
-		ResponseEntity<SubscriptionResponseDto> mobileNumberResponseDtoList = underTest.getSubscriptionDetails(1);
-		assertEquals(HttpStatus.OK, mobileNumberResponseDtoList.getStatusCode());
 
-	}
+    @Test
+    public void testApprovalRequest() throws InvalidSubscriptionIdException {
+        ApproveResponseDTO approveResponseDTO = ApproveResponseDTO.builder()
+                .message("Approved")
+                .statusCode(200)
+                .build();
+        when(userService.approveRequestByAdmin(any(ApproveRequestDTO.class), anyInt())).thenReturn(approveResponseDTO);
+        ResponseEntity<ApproveResponseDTO> response = underTest.approvalRequest(ApproveRequestDTO.builder().approverComments("CLEAR").approverId(1).status("Accepted").build(), SUBSCRIBE_ID);
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("Approved", response.getBody().getMessage());
+    }
+
+    @Test
+    public void testGetAvailableMobileNumbers() throws InvalidSubscriptionIdException {
+        SubscriptionResponseDto subscriptionResponseDto = new SubscriptionResponseDto();
+        subscriptionResponseDto.setApproverComments(MobileConnectionContants.EMPTY_STRING);
+        subscriptionResponseDto.setMessage(MobileConnectionContants.SUBSCRIPTION_MESSAGE);
+        subscriptionResponseDto.setSubscriptionStatus(SubscriptionStatus.PROGRESS.toString());
+        when(userService.getSubscriptionStatus(1)).thenReturn(subscriptionResponseDto);
+        ResponseEntity<SubscriptionResponseDto> mobileNumberResponseDtoList = underTest.getSubscriptionDetails(1);
+        assertEquals(HttpStatus.OK, mobileNumberResponseDtoList.getStatusCode());
+
+    }
 }

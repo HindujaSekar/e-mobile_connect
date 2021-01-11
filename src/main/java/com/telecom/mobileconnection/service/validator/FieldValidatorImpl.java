@@ -9,11 +9,11 @@ import java.util.regex.Pattern;
 
 @Component
 public class FieldValidatorImpl implements FieldValidator {
-    String EMAIL = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
+    String emailFormat = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
 
     @Override
     public boolean validEmailId(final String email) {
-        Pattern p = Pattern.compile(EMAIL, Pattern.CASE_INSENSITIVE);
+        Pattern p = Pattern.compile(emailFormat, Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(email);
         return m.find();
     }
