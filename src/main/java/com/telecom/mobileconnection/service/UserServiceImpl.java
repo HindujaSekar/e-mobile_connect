@@ -116,11 +116,13 @@ public class UserServiceImpl implements UserService {
 	public ApproveResponseDTO approveRequestByAdmin(ApproveRequestDTO approveRequestDTO, Integer subscriptionId)
 			throws InvalidSubscriptionIdException {
 		Optional<Subscription> subscriptionDetails = subscriptionRepository.findBySubscriptionId(subscriptionId);
-		subscriptionDetails.orElseThrow(() -> new InvalidSubscriptionIdException(SUBSCRITION_ID_EXCEPTION));
 		if(subscriptionDetails.isPresent()) {
 			subscriptionRepository.save(updateSubscriptionStatus(approveRequestDTO, subscriptionDetails.get()));
+			return ApproveResponseDTO.builder().message(APPROVER_STATUS_UPDATION).statusCode(HttpStatus.OK.value()).build();
+			}else {
+				throw new InvalidSubscriptionIdException(SUBSCRITION_ID_EXCEPTION);
 			}
-		return ApproveResponseDTO.builder().message(APPROVER_STATUS_UPDATION).statusCode(HttpStatus.OK.value()).build();
+		
 	}
     
     private void validateEmail(final String email) {
