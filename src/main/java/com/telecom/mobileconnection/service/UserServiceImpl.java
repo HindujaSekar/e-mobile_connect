@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
         log.info(GET_USER_SERVICE);
         Optional<Subscription> subscriptionDetails = subscriptionRepository.findBySubscriptionId(subscriptionId);
-        subscriptionDetails.orElseThrow(() -> new InvalidSubscriptionIdException(MobileConnectionContants.NO_SUBSCRIPTION_ID_FOUND));
+        if(subscriptionDetails.isPresent()) {
         SubscriptionResponseDto subscriptionResponseDto = new SubscriptionResponseDto();
         subscriptionResponseDto.setApproverComments(StringUtils.isEmpty(subscriptionDetails.get().getApproverComments())
                 ? MobileConnectionContants.EMPTY_STRING : subscriptionDetails.get().getApproverComments());
@@ -84,6 +84,9 @@ public class UserServiceImpl implements UserService {
         subscriptionResponseDto.setStatusCode(HttpStatus.OK.value());
         subscriptionResponseDto.setMessage(MobileConnectionContants.SUBSCRIPTION_MESSAGE);
         return subscriptionResponseDto;
+        }else {
+        	throw new InvalidSubscriptionIdException(MobileConnectionContants.NO_SUBSCRIPTION_ID_FOUND);
+        }
 
     }
     @Override
