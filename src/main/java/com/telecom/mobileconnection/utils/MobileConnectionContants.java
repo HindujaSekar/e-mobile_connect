@@ -1,5 +1,7 @@
 package com.telecom.mobileconnection.utils;
 
+import java.time.LocalDate;
+
 public class MobileConnectionContants {
 
 	private MobileConnectionContants() {
@@ -20,4 +22,12 @@ public class MobileConnectionContants {
 	public static final String SUBSCRIPTION_MESSAGE = "Subscription details fetched Successfully";
 	public static final Integer STATUS_CODE_OK = 200;
 	public static final String EMPTY_STRING = "";
+	public static final String SUBSCRIPTION_STATUS_NOT_FOUND = "No subscription with %s status has been found";
+    public static final String NEW_CONNECTION = "New connection";
+    public static final Integer APPROVER_ID = 1;
+    public static final LocalDate REGISTER_DATE = LocalDate.now();
+    public static final Integer USER_ID = 1;
+    public static final String AADHAR_NUMBER = "123456781234";
+    public static final String ADDRESS = "Bengaluru";
+    public static final Long MOBILE_NUMBER = 9988776655L;
 }

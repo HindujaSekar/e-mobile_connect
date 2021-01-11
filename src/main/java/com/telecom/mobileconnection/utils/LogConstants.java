@@ -9,5 +9,6 @@ public class LogConstants {
     public static final String GET_USER_CONTROLLER = "Inside User controller";
     public static final String GET_MASTERDATA_SERVICE = "Inside MasterData service";
     public static final String GET_USER_SERVICE = "Inside User service";
+    public static final String GET_CONNECTION_SERVICE = "Inside Requested Connection Service";
 
 }

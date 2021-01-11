@@ -11,5 +11,7 @@ import java.util.Optional;
 public interface MobileNumberRepository extends JpaRepository<MobileNumber, Integer> {
 
     public Optional<List<MobileNumber>> findByAvailability(String availability);
+    
+    public Optional<MobileNumber> findByMobileId(Integer mobileId);
 
 }

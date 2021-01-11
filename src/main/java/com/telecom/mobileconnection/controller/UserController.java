@@ -1,5 +1,6 @@
 package com.telecom.mobileconnection.controller;
 
+import com.telecom.mobileconnection.dto.ConnectionsResponseDto;
 import com.telecom.mobileconnection.dto.SubscriptionResponseDto;
 import com.telecom.mobileconnection.dto.UserRequestDto;
 import com.telecom.mobileconnection.dto.UserResponseDto;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static com.telecom.mobileconnection.utils.LogConstants.GET_USER_CONTROLLER;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,6 +54,21 @@ public class UserController {
         log.info(GET_USER_CONTROLLER);
         SubscriptionResponseDto subscriptionResponseDto = userService.getSubscriptionStatus(subscriptionId);
         return new ResponseEntity<>(subscriptionResponseDto, HttpStatus.OK);
+
+    }
+    
+    /**
+     * This method in User Controller is used to track the In Progress Connection Requests.
+     *
+     * @return Returns the list of all In progress subscription requests
+     * @throws SubscriptionNotFoundException will be thrown when no subscription is found
+     */
+    @GetMapping("/subscriptions/{status}")
+    public ResponseEntity<List<ConnectionsResponseDto>> getRequestedSubscriptions(@RequestParam("status") String status) {
+
+        log.info(GET_USER_CONTROLLER);
+        List<ConnectionsResponseDto> connections = userService.getRequestedSubscriptions(status);
+        return new ResponseEntity<>(connections, HttpStatus.OK);
 
     }
 

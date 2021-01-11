@@ -1,5 +1,7 @@
 package com.telecom.mobileconnection.service;
 
+import com.telecom.mobileconnection.common.SubscriptionStatus;
+import com.telecom.mobileconnection.dto.ConnectionsResponseDto;
 import com.telecom.mobileconnection.dto.SubscriptionResponseDto;
 import com.telecom.mobileconnection.dto.UserRequestDto;
 import com.telecom.mobileconnection.dto.UserResponseDto;
@@ -9,6 +11,7 @@ import com.telecom.mobileconnection.entity.User;
 import com.telecom.mobileconnection.exception.DatabaseConnectionException;
 import com.telecom.mobileconnection.exception.InvalidCredentialsException;
 import com.telecom.mobileconnection.exception.InvalidSubscriptionIdException;
+import com.telecom.mobileconnection.exception.SubscriptionNotFoundException;
 import com.telecom.mobileconnection.repository.MobileNumberRepository;
 import com.telecom.mobileconnection.repository.SubscriptionRepository;
 import com.telecom.mobileconnection.repository.UserRepository;
@@ -17,8 +20,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.telecom.mobileconnection.common.SubscriptionStatus.PROGRESS;
@@ -113,5 +119,24 @@ class UserServiceImplTest {
         assertThrows(InvalidSubscriptionIdException.class, () -> {
             underTest.getSubscriptionStatus(210);
         });
+    }
+    @Test
+    public void testWhenGivenSubscriptionStatusThenGetListOfSubscriptions() throws SubscriptionNotFoundException{
+       
+        Subscription subscription = Subscription.builder().approverComments(NEW_CONNECTION).subscriptionId(SUBSCRIBE_ID).approverId(APPROVER_ID)
+                .mobileId(MOBILE_ID).planId(PLANE_ID).registerDate(REGISTER_DATE).userId(USER_ID).status(SubscriptionStatus.PROGRESS.getStatus()).build();
+        List<Subscription> subscriptionList = new ArrayList<>();
+        subscriptionList.add(subscription);
+       
+        User user = User.builder().aadharNo(AADHAR_NUMBER).address(ADDRESS).alternateNumber(PHONE).userName(USER_NAME).build();
+       
+        when(subscriptionRepository.findByStatus(Mockito.anyString())).thenReturn(subscriptionList);
+        when(userRepository.findByUserId(1)).thenReturn(Optional.of(user));
+        when(mobileNumberRepository.findByMobileId(1)).thenReturn(Optional.of(MobileNumber.builder().mobileNumber(MOBILE_NUMBER).build()));
+       
+        List<ConnectionsResponseDto> response = underTest.getRequestedSubscriptions(SubscriptionStatus.PROGRESS.getStatus());
+       
+        assertEquals(PLANE_ID, response.get(0).getPlanId());
+       
     }
 }

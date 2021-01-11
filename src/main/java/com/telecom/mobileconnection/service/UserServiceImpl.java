@@ -2,6 +2,7 @@ package com.telecom.mobileconnection.service;
 
 import com.telecom.mobileconnection.common.Availability;
 import com.telecom.mobileconnection.common.SubscriptionStatus;
+import com.telecom.mobileconnection.dto.ConnectionsResponseDto;
 import com.telecom.mobileconnection.dto.SubscriptionResponseDto;
 import com.telecom.mobileconnection.dto.UserRequestDto;
 import com.telecom.mobileconnection.dto.UserResponseDto;
@@ -11,6 +12,7 @@ import com.telecom.mobileconnection.entity.User;
 import com.telecom.mobileconnection.exception.DatabaseConnectionException;
 import com.telecom.mobileconnection.exception.InvalidCredentialsException;
 import com.telecom.mobileconnection.exception.InvalidSubscriptionIdException;
+import com.telecom.mobileconnection.exception.SubscriptionNotFoundException;
 import com.telecom.mobileconnection.repository.MobileNumberRepository;
 import com.telecom.mobileconnection.repository.SubscriptionRepository;
 import com.telecom.mobileconnection.repository.UserRepository;
@@ -21,8 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import static com.telecom.mobileconnection.utils.LogConstants.GET_CONNECTION_SERVICE;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.telecom.mobileconnection.utils.LogConstants.GET_USER_SERVICE;
@@ -77,7 +82,28 @@ public class UserServiceImpl implements UserService {
         return subscriptionResponseDto;
 
     }
-
+    @Override
+    public List<ConnectionsResponseDto> getRequestedSubscriptions(String status){
+       
+        log.info(GET_CONNECTION_SERVICE);
+        List<ConnectionsResponseDto> connectionResponse = new ArrayList<>();
+        List<Subscription> connectionList = subscriptionRepository.findByStatus(status);
+       
+        if(connectionList.isEmpty())
+            throw new SubscriptionNotFoundException(String.format(MobileConnectionContants.SUBSCRIPTION_STATUS_NOT_FOUND,status));
+       
+        connectionList.stream().forEach(connections -> {
+            Optional<User> user = userRepository.findByUserId(connections.getUserId());
+            Optional<MobileNumber> number = mobileNumberRepository.findByMobileId(connections.getMobileId());
+            ConnectionsResponseDto response = ConnectionsResponseDto.builder().aadharNo(user.get().getAadharNo())
+                    .address(user.get().getAddress()).alternateNumber(user.get().getAlternateNumber())
+                    .userName(user.get().getUserName()).status(connections.getStatus())
+                    .subscriptionId(connections.getSubscriptionId()).planId(connections.getPlanId())
+                    .newNumber(number.get().getMobileNumber()).build();
+            connectionResponse.add(response);
+        });
+        return connectionResponse;
+    }
     private void validateEmail(final String email) {
         Optional<Boolean> isValid = Optional.of(fieldValidator.validEmailId(email));
         isValid.filter(TRUE::equals).orElseThrow(() ->

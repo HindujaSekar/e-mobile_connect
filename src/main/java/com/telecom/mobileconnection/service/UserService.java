@@ -1,9 +1,13 @@
 package com.telecom.mobileconnection.service;
 
+import com.telecom.mobileconnection.dto.ConnectionsResponseDto;
 import com.telecom.mobileconnection.dto.SubscriptionResponseDto;
 import com.telecom.mobileconnection.dto.UserRequestDto;
 import com.telecom.mobileconnection.dto.UserResponseDto;
 import com.telecom.mobileconnection.exception.InvalidSubscriptionIdException;
+
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,5 +30,13 @@ public interface UserService {
      * @throws InvalidSubscriptionIdException will be thrown in case of invalid Id
      */
     public SubscriptionResponseDto getSubscriptionStatus(Integer requestId) throws InvalidSubscriptionIdException;
+    
+    /**
+     * This method in MasterDataService is used to get the list of In progress connections.
+     *
+     * @return List of connections Which contains userName, address, aaadharNo, newNumber, alternateNumber, subscriptionId, planId and
+     * status of the connection.
+     */
+    public List<ConnectionsResponseDto> getRequestedSubscriptions(String status);
 }
 
