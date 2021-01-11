@@ -125,15 +125,15 @@ public class UserServiceImpl implements UserService {
 		
 	}
     
-    private void validateEmail(final String email) {
+    private boolean validateEmail(final String email) {
         Optional<Boolean> isValid = Optional.of(fieldValidator.validEmailId(email));
-        isValid.filter(TRUE::equals).orElseThrow(() ->
+        return isValid.filter(TRUE::equals).map(isValidEmail -> TRUE).orElseThrow(() ->
                 new InvalidCredentialsException(INVALID_EMAIL));
     }
 
     private void validatePhone(final String phone) {
         Optional<Boolean> isValid = Optional.of(fieldValidator.validPhoneNumber(phone));
-        isValid.filter(TRUE::equals).orElseThrow(() ->
+        isValid.filter(TRUE::equals).map(isValidEmail -> TRUE).orElseThrow(() ->
                 new InvalidCredentialsException(INVALID_PHONE));
     }
 
@@ -149,15 +149,15 @@ public class UserServiceImpl implements UserService {
                 .planId(userRequestDto.getPlanId()).status(SubscriptionStatus.PROGRESS.getStatus()).registerDate(LocalDate.now()).build();
     }
 
-    private void updateMobileNumberStatus(final Integer id, final String status) {
+    private MobileNumber updateMobileNumberStatus(final Integer id, final String status) {
         Optional<MobileNumber> mobileNumber = mobileNumberRepository.findById(id);
-        mobileNumber.map(phone -> {
+        return mobileNumber.map(phone -> {
             phone.setStatus(status);
             return mobileNumberRepository.save(phone);
         }).orElseThrow(() -> new DatabaseConnectionException(DB_CONNECTION_ERROR));
 
-
     }
+   
     private Subscription updateSubscriptionStatus(final ApproveRequestDTO approveRequestDto, Subscription subscriptionDetails) {
     	return Subscription.builder().subscriptionId(subscriptionDetails.getSubscriptionId()).userId(subscriptionDetails.getUserId()).approverId(approveRequestDto.getApproverId()).mobileId(subscriptionDetails.getMobileId()).approverComments(approveRequestDto.getApproverComments())
     	.planId(subscriptionDetails.getPlanId()).status(approveRequestDto.getStatus()).registerDate(LocalDate.now()).build();

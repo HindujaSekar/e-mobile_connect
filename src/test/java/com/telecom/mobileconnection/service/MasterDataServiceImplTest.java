@@ -47,7 +47,7 @@ public class MasterDataServiceImplTest {
 		mobileNumber.setStatus(MobileConnectionContants.AVAILABLE);
 		mobileNumberList.add(mobileNumber);
 		Mockito.when(
-				mobileNumberRepository.findByAvailability(MobileConnectionContants.AVAILABLE))
+				mobileNumberRepository.findByStatus(MobileConnectionContants.AVAILABLE))
 				.thenReturn(Optional.of(mobileNumberList));
 		List<MobileNumberResponseDto> list = masterDataServiceImpl.getAvailableMobileNumbers();
 		assertNotNull(list);
@@ -57,7 +57,7 @@ public class MasterDataServiceImplTest {
 	@Test
 	public void testNoMobileNumbersFound() throws MobileNumbersNotAvailableException{
 		Mockito.when(
-				mobileNumberRepository.findByAvailability("Available"))
+				mobileNumberRepository.findByStatus("Available"))
 				.thenReturn(Optional.empty());
 		Assertions.assertThrows(MobileNumbersNotAvailableException.class, () -> {
 			masterDataServiceImpl.getAvailableMobileNumbers();

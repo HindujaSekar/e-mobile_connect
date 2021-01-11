@@ -32,7 +32,7 @@ public class MasterDataServiceImpl implements MasterDataService {
     public List<MobileNumberResponseDto> getAvailableMobileNumbers() throws MobileNumbersNotAvailableException {
 
         log.info(GET_MASTERDATA_SERVICE);
-        Optional<List<MobileNumber>> mobileNumberList = mobileNumberRepository.findByAvailability(MobileConnectionContants.AVAILABLE);
+        Optional<List<MobileNumber>> mobileNumberList = mobileNumberRepository.findByStatus(MobileConnectionContants.AVAILABLE);
         List<MobileNumberResponseDto> mobileNumberResponseDTOList = new ArrayList<>();
         if(mobileNumberList.isPresent()) {
         mobileNumberList.get().forEach(mobileNumber -> mobileNumberResponseDTOList.add(MobileNumberResponseDto.builder()
