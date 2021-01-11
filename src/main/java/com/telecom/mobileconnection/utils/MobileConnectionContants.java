@@ -30,4 +30,6 @@ public class MobileConnectionContants {
     public static final String AADHAR_NUMBER = "123456781234";
     public static final String ADDRESS = "Bengaluru";
     public static final Long MOBILE_NUMBER = 9988776655L;
+    public static final String SUBSCRITION_ID_EXCEPTION="Invalid Subscription ID";
+    public static final String APPROVER_STATUS_UPDATION = "Status Updated Successfully";
 }

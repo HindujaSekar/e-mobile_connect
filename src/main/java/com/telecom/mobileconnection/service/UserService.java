@@ -1,5 +1,7 @@
 package com.telecom.mobileconnection.service;
 
+import com.telecom.mobileconnection.dto.ApproveRequestDTO;
+import com.telecom.mobileconnection.dto.ApproveResponseDTO;
 import com.telecom.mobileconnection.dto.ConnectionsResponseDto;
 import com.telecom.mobileconnection.dto.SubscriptionResponseDto;
 import com.telecom.mobileconnection.dto.UserRequestDto;
@@ -38,5 +40,7 @@ public interface UserService {
      * status of the connection.
      */
     public List<ConnectionsResponseDto> getRequestedSubscriptions(String status);
+    
+    public ApproveResponseDTO approveRequestByAdmin(ApproveRequestDTO approveRequestDTO, Integer subscriptionId) throws InvalidSubscriptionIdException;
 }
 

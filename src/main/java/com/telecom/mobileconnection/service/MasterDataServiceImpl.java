@@ -34,10 +34,13 @@ public class MasterDataServiceImpl implements MasterDataService {
         log.info(GET_MASTERDATA_SERVICE);
         Optional<List<MobileNumber>> mobileNumberList = mobileNumberRepository.findByAvailability(MobileConnectionContants.AVAILABLE);
         List<MobileNumberResponseDto> mobileNumberResponseDTOList = new ArrayList<>();
-        mobileNumberList.orElseThrow(() -> new MobileNumbersNotAvailableException(MobileConnectionContants.MOBILE_NUMBERS_NOT_FOUND));
+        if(mobileNumberList.isPresent()) {
         mobileNumberList.get().forEach(mobileNumber -> mobileNumberResponseDTOList.add(MobileNumberResponseDto.builder()
                 .mobileNumberId(mobileNumber.getMobileId())
                 .mobileNumber(mobileNumber.getMobileNumber()).build()));
+        }else {
+        	throw new MobileNumbersNotAvailableException(MobileConnectionContants.MOBILE_NUMBERS_NOT_FOUND);
+        }
         return mobileNumberResponseDTOList;
 
     }

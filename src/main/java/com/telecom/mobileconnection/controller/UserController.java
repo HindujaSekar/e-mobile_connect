@@ -1,5 +1,7 @@
 package com.telecom.mobileconnection.controller;
 
+import com.telecom.mobileconnection.dto.ApproveRequestDTO;
+import com.telecom.mobileconnection.dto.ApproveResponseDTO;
 import com.telecom.mobileconnection.dto.ConnectionsResponseDto;
 import com.telecom.mobileconnection.dto.SubscriptionResponseDto;
 import com.telecom.mobileconnection.dto.UserRequestDto;
@@ -70,6 +72,12 @@ public class UserController {
         List<ConnectionsResponseDto> connections = userService.getRequestedSubscriptions(status);
         return new ResponseEntity<>(connections, HttpStatus.OK);
 
+    }
+    
+    @PutMapping("/{subscriptionId}")
+    public ResponseEntity<ApproveResponseDTO> approvalRequest(@RequestBody ApproveRequestDTO approveRequestDTO, @RequestParam Integer subscriptionId) throws InvalidSubscriptionIdException
+    {
+    return new ResponseEntity<>(userService.approveRequestByAdmin(approveRequestDTO, subscriptionId), HttpStatus.OK);
     }
 
 }

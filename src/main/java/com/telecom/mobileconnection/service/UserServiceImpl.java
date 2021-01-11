@@ -2,6 +2,8 @@ package com.telecom.mobileconnection.service;
 
 import com.telecom.mobileconnection.common.Availability;
 import com.telecom.mobileconnection.common.SubscriptionStatus;
+import com.telecom.mobileconnection.dto.ApproveRequestDTO;
+import com.telecom.mobileconnection.dto.ApproveResponseDTO;
 import com.telecom.mobileconnection.dto.ConnectionsResponseDto;
 import com.telecom.mobileconnection.dto.SubscriptionResponseDto;
 import com.telecom.mobileconnection.dto.UserRequestDto;
@@ -18,8 +20,10 @@ import com.telecom.mobileconnection.repository.SubscriptionRepository;
 import com.telecom.mobileconnection.repository.UserRepository;
 import com.telecom.mobileconnection.service.validator.FieldValidator;
 import com.telecom.mobileconnection.utils.MobileConnectionContants;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -72,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
         log.info(GET_USER_SERVICE);
         Optional<Subscription> subscriptionDetails = subscriptionRepository.findBySubscriptionId(subscriptionId);
-        subscriptionDetails.orElseThrow(() -> new InvalidSubscriptionIdException(MobileConnectionContants.NO_SUBSCRIPTION_ID_FOUND));
+        if(subscriptionDetails.isPresent()) {
         SubscriptionResponseDto subscriptionResponseDto = new SubscriptionResponseDto();
         subscriptionResponseDto.setApproverComments(StringUtils.isEmpty(subscriptionDetails.get().getApproverComments())
                 ? MobileConnectionContants.EMPTY_STRING : subscriptionDetails.get().getApproverComments());
@@ -80,6 +84,9 @@ public class UserServiceImpl implements UserService {
         subscriptionResponseDto.setStatusCode(HttpStatus.OK.value());
         subscriptionResponseDto.setMessage(MobileConnectionContants.SUBSCRIPTION_MESSAGE);
         return subscriptionResponseDto;
+        }else {
+        	throw new InvalidSubscriptionIdException(MobileConnectionContants.NO_SUBSCRIPTION_ID_FOUND);
+        }
 
     }
     @Override
@@ -104,6 +111,18 @@ public class UserServiceImpl implements UserService {
         });
         return connectionResponse;
     }
+    
+    @Override
+	public ApproveResponseDTO approveRequestByAdmin(ApproveRequestDTO approveRequestDTO, Integer subscriptionId)
+			throws InvalidSubscriptionIdException {
+		Optional<Subscription> subscriptionDetails = subscriptionRepository.findBySubscriptionId(subscriptionId);
+		subscriptionDetails.orElseThrow(() -> new InvalidSubscriptionIdException(SUBSCRITION_ID_EXCEPTION));
+		if(subscriptionDetails.isPresent()) {
+			subscriptionRepository.save(updateSubscriptionStatus(approveRequestDTO, subscriptionDetails.get()));
+			}
+		return ApproveResponseDTO.builder().message(APPROVER_STATUS_UPDATION).statusCode(HttpStatus.OK.value()).build();
+	}
+    
     private void validateEmail(final String email) {
         Optional<Boolean> isValid = Optional.of(fieldValidator.validEmailId(email));
         isValid.filter(TRUE::equals).orElseThrow(() ->
@@ -137,4 +156,8 @@ public class UserServiceImpl implements UserService {
 
 
     }
+    private Subscription updateSubscriptionStatus(final ApproveRequestDTO approveRequestDto, Subscription subscriptionDetails) {
+    	return Subscription.builder().subscriptionId(subscriptionDetails.getSubscriptionId()).userId(subscriptionDetails.getUserId()).approverId(subscriptionDetails.getApproverId()).mobileId(subscriptionDetails.getMobileId()).approverComments(approveRequestDto.getApproverComments())
+    	.planId(subscriptionDetails.getPlanId()).status(approveRequestDto.getStatus()).registerDate(LocalDate.now()).build();
+    	}
 }
