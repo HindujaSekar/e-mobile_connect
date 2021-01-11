@@ -33,6 +33,5 @@ public class MobileConnectionContants {
 	public static final Long MOBILE_NUMBER = 9988776655L;
 	public static final String SUBSCRITION_ID_EXCEPTION = "Invalid Subscription ID";
 	public static final String APPROVER_STATUS_UPDATION = "Status Updated Successfully";
-	public static final String USER_EMAIL = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
 	public static final String PHONE_NUMBER = "^[6-9]\\d{9}$";
 }

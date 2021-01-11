@@ -7,7 +7,7 @@ import lombok.Getter;
 @Builder
 public class ApproveRequestDTO {
 
-	public String status;
-	public String approverComments;
-	public Integer approverId;
+	private String status;
+	private String approverComments;
+	private Integer approverId;
 }

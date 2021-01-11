@@ -1,4 +1,4 @@
-package com.telecom.mobileconnection;
+package com.telecom.mobileconnection.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

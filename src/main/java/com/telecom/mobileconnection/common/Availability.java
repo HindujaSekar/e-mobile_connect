@@ -8,9 +8,9 @@ public enum Availability {
     AVAILABLE("AVAILABLE"),
     NOT_AVAILABLE("NOT_AVAILABLE");
 
-    private final String availability;
+    private final String availabilityStatus;
 
-    Availability(final String availability) {
-        this.availability = availability;
+    Availability(final String availabilityStatus) {
+        this.availabilityStatus = availabilityStatus;
     }
 }
