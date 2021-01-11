@@ -46,12 +46,13 @@ public class UpdateConnectionImpl {
 					} else {
 
 						Optional<MobileNumber> optionalMobileNumber = mobileNumberRepository.findByMobileId(subscription.getMobileId());
-						optionalMobileNumber.ifPresentOrElse(mobileNumber -> {
+						if(optionalMobileNumber.isPresent()) {
+							MobileNumber mobileNumber = optionalMobileNumber.get();
 							mobileNumber.setAvailability(Availability.AVAILABLE.getAvailability());
 							mobileNumbers.add(mobileNumber);
 							subscription.setStatus(SubscriptionStatus.CONNECTION_REJECTED.getStatus());
 							subscriptions.add(subscription);
-						}, null);
+						}
 					}
 				});
 		subscriptionRepository.saveAll(subscriptions);
